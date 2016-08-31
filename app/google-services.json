@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "840827560525",
+    "firebase_url": "https://coupons-app-5fd14.firebaseio.com",
+    "project_id": "coupons-app-5fd14",
+    "storage_bucket": "coupons-app-5fd14.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840827560525:android:0d88da9811277861",
+        "android_client_info": {
+          "package_name": "com.creation.haasith.easycoupon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "840827560525-fq5s037d3705bvgp98imt5c4vquimsor.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYQCeJ317neNUJQNJOLwKSEqNkd9Da2Bs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

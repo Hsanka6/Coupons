@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EasyCoupon</string>
+    <string name="facebook_application_id" translatable="false">294318914265805</string>
 </resources>
