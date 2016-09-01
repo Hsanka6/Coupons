@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">EasyCoupon</string>
     <string name="facebook_application_id" translatable="false">294318914265805</string>
+
+    <string-array name="planets_array">
+        <item>Users</item>
+        <item>Stores</item>
+    </string-array>
 </resources>
