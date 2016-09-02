@@ -6,4 +6,12 @@
         <item>Users</item>
         <item>Stores</item>
     </string-array>
+
+
+
+    <string-array name="coupon_type_array">
+        <item>Pick Type of Coupon</item>
+        <item>One Day</item>
+        <item>Multiple Day</item>
+    </string-array>
 </resources>

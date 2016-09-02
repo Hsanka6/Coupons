@@ -6,6 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -23,14 +26,22 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import org.honorato.multistatetogglebutton.MultiStateToggleButton;
+import org.honorato.multistatetogglebutton.ToggleButton;
+
 public class LoginActivity extends AppCompatActivity
 {
     private static final int RC_SIGN_IN = 1;
     GoogleSignInOptions gso;
-    SignInButton googleSignIn;
+    private SignInButton googleSignIn;
     private FirebaseAuth fireBaseAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String TAG = "App";
+
+    private MultiStateToggleButton loginSwitch;
+    private EditText emailET, passwordET;
+    private Button storeSignInButton;
+    private TextView signUpText;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -39,7 +50,48 @@ public class LoginActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //hides actionbar
+        getSupportActionBar().hide();
+
+
         googleSignIn = (SignInButton) findViewById(R.id.googleSignIn);
+        loginSwitch = (MultiStateToggleButton) findViewById(R.id.loginSwitch);
+        emailET = (EditText) findViewById(R.id.emailET);
+        passwordET = (EditText) findViewById(R.id.passwordET);
+        storeSignInButton = (Button) findViewById(R.id.storeSignInButton);
+        signUpText = (TextView) findViewById(R.id.signUpText);
+
+        //initially gone
+        emailET.setVisibility(View.GONE);
+        passwordET.setVisibility(View.GONE);
+        storeSignInButton.setVisibility(View.GONE);
+        signUpText.setVisibility(View.GONE);
+
+
+        loginSwitch.setOnValueChangedListener(new ToggleButton.OnValueChangedListener() {
+            @Override
+            public void onValueChanged(int position)
+            {
+                if(position == 0)
+                {
+                    googleSignIn.setVisibility(View.VISIBLE);
+                    emailET.setVisibility(View.GONE);
+                    passwordET.setVisibility(View.GONE);
+                    storeSignInButton.setVisibility(View.GONE);
+                    signUpText.setVisibility(View.GONE);
+                }
+                else
+                {
+                    emailET.setVisibility(View.VISIBLE);
+                    passwordET.setVisibility(View.VISIBLE);
+                    storeSignInButton.setVisibility(View.VISIBLE);
+                    signUpText.setVisibility(View.VISIBLE);
+                    googleSignIn.setVisibility(View.GONE);
+                }
+
+            }
+        });
 
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -84,6 +136,11 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
+
+
+
+
+
     }
 
     private void signIn() {
@@ -126,8 +183,7 @@ public class LoginActivity extends AppCompatActivity
 
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                         // ...
                     }
@@ -149,4 +205,36 @@ public class LoginActivity extends AppCompatActivity
     }
 
 
+    public void signUp(View view)
+    {
+        startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
+    }
+
+    public void signInButton(View view)
+    {
+        fireBaseAuth.signInWithEmailAndPassword(emailET.getText().toString(),passwordET.getText().toString())
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithEmail:failed", task.getException());
+                            Toast.makeText(getApplicationContext(), "Failed to log in", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        // ...
+                    }
+                });
+
+
+    }
 }

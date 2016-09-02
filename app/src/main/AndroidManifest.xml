@@ -19,6 +19,10 @@
         </activity>
         <activity android:name=".HomeActivity">
         </activity>
+        <activity android:name=".SignUpActivity">
+        </activity>
+        <activity android:name=".AddCoupon">
+        </activity>
     </application>
 
 </manifest>

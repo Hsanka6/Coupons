@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -53,5 +55,31 @@ public class HomeActivity extends AppCompatActivity
     {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+    }
+
+
+    //Set up menu resource file
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        // Inflate the menu_main; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_shop_home, menu);
+        return true;
+    }
+
+
+    //Set up action bar button clicks
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle presses on the action bar items
+        switch (item.getItemId())
+        {
+            case R.id.addCoupon:
+                startActivity(new Intent(this, AddCoupon.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
