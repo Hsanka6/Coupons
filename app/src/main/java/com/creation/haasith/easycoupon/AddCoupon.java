@@ -79,8 +79,8 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         setUpSpinner();
 
         //set up action bar
-        getSupportActionBar().setTitle("Add coupon");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setTitle("Add coupon");
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 
@@ -301,6 +301,11 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         switch (item.getItemId())
         {
             case R.id.saveCoupon:
+
+
+
+
+
                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
 
 
@@ -335,8 +340,10 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second)
     {
-        String hourString;
-        String am_pm;
+        String hourString = "";
+        String am_pm = "";
+
+
         if(hourOfDay < 12)
         {
             hourOfDay = hourOfDay;
@@ -358,7 +365,6 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
 
         String time = hourString+":"+minuteString + " " + am_pm;
 
-        Log.e("Hour", String.valueOf(hourOfDay));
 
         if(!switchTimeDialog)
         {

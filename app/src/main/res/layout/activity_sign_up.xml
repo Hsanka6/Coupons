@@ -9,12 +9,34 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.creation.haasith.easycoupon.SignUpActivity">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Store Name"
+        android:id="@+id/storeNameET"/>
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Address"
+        android:id="@+id/addressET"
+        android:layout_below="@+id/storeNameET"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Phone Number"
+        android:id="@+id/storePhoneNumberET"
+        android:layout_below="@+id/addressET"/>
+
 
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
+        android:layout_below="@+id/storePhoneNumberET"
         android:id="@+id/signUpEmailET"/>
 
     <EditText
@@ -23,13 +45,16 @@
         android:hint="Password"
         android:id="@+id/signUpPasswordET"
         android:layout_below="@id/signUpEmailET"/>
+
+
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/signUpPasswordET"
         android:layout_centerHorizontal="true"
         android:id="@+id/signUpButton"
         android:onClick="signUpButton"
+        android:layout_below="@id/signUpPasswordET"
         android:text="Sign Up"/>
 
 
