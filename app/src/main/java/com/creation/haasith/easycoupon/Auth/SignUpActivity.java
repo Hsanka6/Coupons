@@ -1,4 +1,4 @@
-package com.creation.haasith.easycoupon;
+package com.creation.haasith.easycoupon.Auth;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.creation.haasith.easycoupon.Models.Coupon;
+import com.creation.haasith.easycoupon.HomeActivity;
+import com.creation.haasith.easycoupon.R;
+import com.creation.haasith.easycoupon.Models.Store;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -20,6 +24,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 public class SignUpActivity extends AppCompatActivity
 {
@@ -63,8 +69,11 @@ public class SignUpActivity extends AppCompatActivity
                 {
                     // User is signed in
                     Log.d(TAG, "Signed IN:" + user.getUid());
-                    //writeNewStore(user.getUid(),nameET.getText().toString(),emailET.getText().toString(),addressET.getText().toString(),phoneNumberET.getText().toString());
-                    writeNewStore(user.getUid(),nameET.getText().toString(),emailET.getText().toString(),addressET.getText().toString(),phoneNumberET.getText().toString());
+                    ArrayList<Coupon> coupons = new ArrayList<Coupon>();
+
+                    Coupon coupon = new Coupon("0","0","0","0");
+                    coupons.add(coupon);
+                    writeNewStore(user.getUid(),nameET.getText().toString(),emailET.getText().toString(),addressET.getText().toString(),phoneNumberET.getText().toString(),coupons);
 
 
 
@@ -101,21 +110,14 @@ public class SignUpActivity extends AppCompatActivity
     }
 
 
-    private void writeNewStore(String userId, String name, String email, String address, String phoneNumber) {
-        Store store = new Store(name, email, address,phoneNumber);
+    private void writeNewStore(String userId, String name, String email, String address, String phoneNumber, ArrayList<Coupon>coupons) {
+        Store store = new Store(name, email, address,phoneNumber,coupons);
 
         mDatabase.child("Stores").child(userId).setValue(store);
     }
 
     public void signUpButton(View view)
     {
-        Log.e("lenght", String.valueOf(emailET.getText().toString().length()));
-        Log.e("lenght", String.valueOf(passwordET.getText().toString().length()));
-        Log.e("lenght", String.valueOf(phoneNumberET.getText().toString().length()));
-        Log.e("lenght", String.valueOf(addressET.getText().toString().length()));
-
-
-        Log.e("lenght", String.valueOf(nameET.getText().toString().length()));
 
 
 

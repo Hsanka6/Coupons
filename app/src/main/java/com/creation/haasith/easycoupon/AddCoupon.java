@@ -3,6 +3,7 @@ package com.creation.haasith.easycoupon;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -16,16 +17,20 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.creation.haasith.easycoupon.Models.Coupon;
+import com.creation.haasith.easycoupon.Models.Store;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {
@@ -38,10 +43,16 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
 
     boolean switchDateDialog;
 
-    FirebaseDatabase database;
+
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseAuth mAuth;
+
+    private DatabaseReference ref;
+    private FirebaseUser user;
 
     boolean switchTimeDialog;
 
+    boolean saveCoupon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -64,7 +75,6 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
 
 
 
-
         startTimeButton.setVisibility(View.GONE);
         endTimeButton.setVisibility(View.GONE);
         startDayButton.setVisibility(View.GONE);
@@ -78,9 +88,10 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
 
         setUpSpinner();
 
+
         //set up action bar
-//        getSupportActionBar().setTitle("Add coupon");
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Add coupon");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 
@@ -174,29 +185,8 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         });
 
 
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("mes");
+        ref = FirebaseDatabase.getInstance().getReference();
 
-
-        myRef.setValue("Hello, World!");
-
-
-        // Read from the database
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String value = dataSnapshot.getValue(String.class);
-                Log.d(TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
 
 
 
@@ -292,6 +282,20 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         return true;
     }
 
+    private void updateStore (String userId, String name, String address, String phoneNumber, String email, ArrayList<Coupon>coupons)
+    {
+
+        String key = ref.child("Stores").push().getKey();
+        Store store = new Store(name, address, phoneNumber, email,coupons);
+        Map<String, Object> postValues = store.toMap();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/Stores/" + key, postValues);
+        childUpdates.put("/store-coupons/" + userId + "/" + key, postValues);
+
+        ref.updateChildren(childUpdates);
+
+    }
 
     //Set up action bar button clicks
     @Override
@@ -301,6 +305,48 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         switch (item.getItemId())
         {
             case R.id.saveCoupon:
+
+
+                mAuth = FirebaseAuth.getInstance();
+
+                mAuthListener = new FirebaseAuth.AuthStateListener()
+                {
+                    @Override
+                    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth)
+                    {
+                        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                        if (user != null)
+                        {
+                            //createCoupon(user.getUid(),"nammm", "de", "start", "end");
+
+                            //updateStore(user.getUid(),user.);
+
+                            //Coupon coupon = new Coupon(name,description,start,end);
+
+                            //ArrayList<Coupon> coupons = new ArrayList<Coupon>();
+
+                            //coupons.add(coupon);
+
+                            // User is signed in
+                            Toast.makeText(getApplicationContext(), "succ", Toast.LENGTH_SHORT).show();
+
+                            Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                        } else
+                        {
+                            // User is signed out
+                            Log.d(TAG, "onAuthStateChanged:signed_out");
+
+                            Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_SHORT).show();
+                        }
+                        // ...
+                    }
+
+
+                };
+
+                mAuth.addAuthStateListener(mAuthListener);
+
 
 
 
@@ -343,6 +389,8 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         String hourString = "";
         String am_pm = "";
 
+        //fix 12 am and 12 pm
+
 
         if(hourOfDay < 12)
         {
@@ -381,13 +429,8 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
             endTimeTV.setText(time);
 
         }
-
-
-
-
-
-
-
     }
+
+
 }
 

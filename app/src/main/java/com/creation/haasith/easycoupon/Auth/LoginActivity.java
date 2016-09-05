@@ -1,4 +1,4 @@
-package com.creation.haasith.easycoupon;
+package com.creation.haasith.easycoupon.Auth;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.creation.haasith.easycoupon.HomeActivity;
+import com.creation.haasith.easycoupon.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;

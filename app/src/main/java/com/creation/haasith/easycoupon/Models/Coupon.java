@@ -1,4 +1,4 @@
-package com.creation.haasith.easycoupon;
+package com.creation.haasith.easycoupon.Models;
 
 /**
  * Created by gangasanka on 9/2/16.

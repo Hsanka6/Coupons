@@ -9,7 +9,7 @@
 
 
     <string name="drawer_open">Drawer Open</string>
-    <string name="drawer_closer">Drawer Close</string>
+    <string name="drawer_close">Drawer Close</string>
 
 
     <string-array name="coupon_type_array">

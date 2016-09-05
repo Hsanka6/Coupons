@@ -10,16 +10,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".Auth.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".HomeActivity">
+        <activity android:name=".HomeActivity"
+            android:theme="@style/NoAppTheme"
+            android:fitsSystemWindows="true">
         </activity>
-        <activity android:name=".SignUpActivity">
+        <activity android:name=".Auth.SignUpActivity">
         </activity>
         <activity android:name=".AddCoupon">
         </activity>
