@@ -1,5 +1,6 @@
 package com.creation.haasith.easycoupon.Auth;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -47,6 +48,8 @@ public class LoginActivity extends AppCompatActivity
 
     private GoogleApiClient mGoogleApiClient;
 
+    private ProgressDialog loginProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -56,6 +59,8 @@ public class LoginActivity extends AppCompatActivity
         //hides actionbar
         getSupportActionBar().hide();
 
+
+        loginProgress = new ProgressDialog(this);
 
         googleSignIn = (SignInButton) findViewById(R.id.googleSignIn);
         loginSwitch = (MultiStateToggleButton) findViewById(R.id.loginSwitch);
@@ -117,9 +122,11 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    //loginProgress.dismiss();
                     startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                 } else {
                     // User is signed out
@@ -146,6 +153,8 @@ public class LoginActivity extends AppCompatActivity
     }
 
     private void signIn() {
+        loginProgress.setMessage("Logging In");
+        loginProgress.show();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -161,7 +170,9 @@ public class LoginActivity extends AppCompatActivity
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
+                loginProgress.dismiss();
             } else {
+
                 // Google Sign In failed, update UI appropriately
                 // ...
             }
@@ -172,12 +183,16 @@ public class LoginActivity extends AppCompatActivity
     {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
+
+
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         fireBaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
@@ -187,8 +202,14 @@ public class LoginActivity extends AppCompatActivity
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
+                        else
+                        {
+                            loginProgress.dismiss();
+                        }
                         // ...
                     }
+
+
                 });
     }
 
@@ -214,8 +235,11 @@ public class LoginActivity extends AppCompatActivity
 
     public void signInButton(View view)
     {
-        fireBaseAuth.signInWithEmailAndPassword(emailET.getText().toString(),passwordET.getText().toString())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        loginProgress.setMessage("Logging In");
+        loginProgress.show();
+
+        fireBaseAuth.signInWithEmailAndPassword(emailET.getText().toString(),passwordET.getText().toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
@@ -230,11 +254,13 @@ public class LoginActivity extends AppCompatActivity
                         else
                         {
                             Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
+                            loginProgress.dismiss();
 
                         }
 
                         // ...
                     }
+
                 });
 
 
