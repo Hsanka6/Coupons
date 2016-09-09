@@ -18,11 +18,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.creation.haasith.easycoupon.Auth.LoginActivity;
 import com.creation.haasith.easycoupon.Views.HomeFragment;
 import com.creation.haasith.easycoupon.Views.ProfileFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class HomeActivity extends AppCompatActivity
 {
@@ -35,6 +41,8 @@ public class HomeActivity extends AppCompatActivity
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
+
+    private DatabaseReference db;
 
 
 
@@ -96,7 +104,27 @@ public class HomeActivity extends AppCompatActivity
 
 
 
+        db = FirebaseDatabase.getInstance().getReference().child("Users").child("one");
 
+        db.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                String a = dataSnapshot.getValue(String.class);
+
+                Toast.makeText(getApplicationContext(), a,Toast.LENGTH_LONG).show();
+
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
 
 
 

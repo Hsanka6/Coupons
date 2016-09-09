@@ -9,21 +9,38 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ImageView
+            <ImageButton
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="220dp"
+                android:onClick="couponImagePost"
+                android:src="@mipmap/add_btn"
+                android:background="#00ffffff"
+                android:scaleType="centerCrop"
                 android:id="@+id/couponImage"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Coupon Name"
+                android:hint="Coupon Title"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/input_outline"
                 android:id="@+id/couponNameET"
+                android:layout_centerHorizontal="true"
+                android:padding="15dp"
                 android:layout_below="@+id/couponImage"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/input_outline"
+                android:padding="15dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:inputType="textMultiLine"
                 android:layout_below="@+id/couponNameET"
                 android:id="@+id/couponDescriptionET"
                 android:hint="Coupon Description"
@@ -32,6 +49,12 @@
 
             <Spinner
                 android:id="@+id/couponTypeSpinner"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_centerHorizontal="true"
+                android:padding="10dp"
+                android:background="@drawable/input_outline"
                 android:layout_below="@+id/couponDescriptionET"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"/>
@@ -40,6 +63,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/startTime"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/couponTypeSpinner">
 
                 <Button
@@ -69,6 +96,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/endTime"
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_below="@+id/startTime">
 
                 <Button
@@ -96,6 +127,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/startDay"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/endTime">
 
                 <Button
@@ -123,6 +158,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/endDay"
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_below="@+id/startDay">
 
                 <Button

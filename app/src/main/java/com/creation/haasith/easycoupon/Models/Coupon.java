@@ -9,15 +9,23 @@ public class Coupon
     private String description;
     private String start;
     private String end;
+    private String image;
 
+    public String getImage()
+    {
+        return image;
+    }
 
-    public Coupon(String name, String description, String start, String end)
+    public Coupon(String name, String description, String start, String end, String image)
     {
         this.name = name;
         this.description = description;
         this.start = start;
         this.end = end;
+        this.image = image;
     }
+
+
 
     public Coupon()
     {

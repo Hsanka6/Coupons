@@ -1,7 +1,9 @@
 package com.creation.haasith.easycoupon;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -13,24 +15,25 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.creation.haasith.easycoupon.Models.Coupon;
-import com.creation.haasith.easycoupon.Models.Store;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {
@@ -40,15 +43,27 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
     private EditText couponNameET, couponDescriptonET;
     private Button startTimeButton, endTimeButton, startDayButton, endDayButton;
     private TextView startTimeTV, endTimeTV, startDayTV, endDayTV;
-
+    private ImageButton couponImage;
+    private boolean timeDate;
     boolean switchDateDialog;
+
+    private Coupon coupon;
+    private Uri imageUri;
+    private StorageReference storageReference;
+    private ProgressDialog couponPostProgress;
+
+
+    private final static int GALLERY_IMAGE = 1;
+
 
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
-
-    private DatabaseReference ref;
     private FirebaseUser user;
+
+
+    private DatabaseReference db;
+
 
     boolean switchTimeDialog;
 
@@ -72,7 +87,7 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         endTimeTV = (TextView) findViewById(R.id.endTimeTV);
         startDayTV = (TextView) findViewById(R.id.startDateTV);
         endDayTV = (TextView) findViewById(R.id.endDateTV);
-
+        couponImage = (ImageButton) findViewById(R.id.couponImage);
 
 
         startTimeButton.setVisibility(View.GONE);
@@ -84,6 +99,8 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         startDayTV.setVisibility(View.GONE);
         endDayTV.setVisibility(View.GONE);
 
+
+        couponPostProgress = new ProgressDialog(this);
 
 
         setUpSpinner();
@@ -185,13 +202,28 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         });
 
 
-        ref = FirebaseDatabase.getInstance().getReference();
+
+
+        db = FirebaseDatabase.getInstance().getReference().child("Stores");
+
+        storageReference = FirebaseStorage.getInstance().getReference();
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
 
 
+        couponImage.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent getImage = new Intent(Intent.ACTION_GET_CONTENT);
+                getImage.setType("image/*");
+                startActivityForResult(getImage, GALLERY_IMAGE);
 
 
-
+            }
+        });
 
 
     }
@@ -271,7 +303,14 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
             }
         });
 
+
+
+
+
+
     }
+
+
 
     //Set up menu resource file
     @Override
@@ -282,19 +321,20 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         return true;
     }
 
-    private void updateStore (String userId, String name, String address, String phoneNumber, String email, ArrayList<Coupon>coupons)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        String key = ref.child("Stores").push().getKey();
-        Store store = new Store(name, address, phoneNumber, email,coupons);
-        Map<String, Object> postValues = store.toMap();
+        if(requestCode == GALLERY_IMAGE && resultCode == RESULT_OK)
+        {
+            imageUri = data.getData();
 
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/Stores/" + key, postValues);
-        childUpdates.put("/store-coupons/" + userId + "/" + key, postValues);
+            couponImage.setImageURI(imageUri);
 
-        ref.updateChildren(childUpdates);
 
+
+        }
     }
 
     //Set up action bar button clicks
@@ -305,6 +345,9 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         switch (item.getItemId())
         {
             case R.id.saveCoupon:
+
+                couponPostProgress.setMessage("Adding Coupon");
+                couponPostProgress.show();
 
 
                 mAuth = FirebaseAuth.getInstance();
@@ -318,18 +361,81 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
 
                         if (user != null)
                         {
-                            //createCoupon(user.getUid(),"nammm", "de", "start", "end");
+                            Log.e("num","1");
 
-                            //updateStore(user.getUid(),user.);
+                            final DatabaseReference dbChild = db.child(user.getUid()).child("coupons");
 
-                            //Coupon coupon = new Coupon(name,description,start,end);
 
-                            //ArrayList<Coupon> coupons = new ArrayList<Coupon>();
+                            StorageReference filePath = storageReference.child("Coupons").child(user.getUid()).child(imageUri.getLastPathSegment());
 
-                            //coupons.add(coupon);
+                            if(timeDate)
+                            {
 
-                            // User is signed in
-                            Toast.makeText(getApplicationContext(), "succ", Toast.LENGTH_SHORT).show();
+                                Log.e("num","2");
+
+                                filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                                {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                                    {
+
+
+
+                                        Log.e("num","3");
+                                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                        coupon = new Coupon(couponNameET.getText().toString(), couponDescriptonET.getText().toString(), startDayTV.getText().toString(),endDayTV.getText().toString(),downloadUrl.toString());
+
+
+
+
+
+                                        dbChild.push().setValue(coupon);
+
+
+                                        couponPostProgress.dismiss();
+                                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+
+                                    }
+
+
+                                });
+
+
+
+
+                            }
+                            else
+                            {
+                                filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
+                                {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                                    {
+
+
+                                        Log.e("num","4");
+
+                                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                        coupon = new Coupon(couponNameET.getText().toString(), couponDescriptonET.getText().toString(), startTimeTV.getText().toString(),endTimeTV.getText().toString(), downloadUrl.toString());
+
+
+
+
+                                        dbChild.push().setValue(coupon);
+
+
+                                        couponPostProgress.dismiss();
+                                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+
+                                    }
+
+
+                                });
+
+
+                            }
+
+                            Toast.makeText(getApplicationContext(), "Coupon Saved", Toast.LENGTH_SHORT).show();
 
                             Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                         } else
@@ -346,15 +452,6 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
                 };
 
                 mAuth.addAuthStateListener(mAuthListener);
-
-
-
-
-
-
-                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-
-
                 return true;
             case android.R.id.home:
                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
@@ -368,6 +465,7 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
     {
         String date = "You picked the following date: "+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
         Log.e("date", date);
+        timeDate = true;
         if(!switchDateDialog)
         {
             //gets startdate
@@ -392,15 +490,34 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
         //fix 12 am and 12 pm
 
 
-        if(hourOfDay < 12)
+        if(hourOfDay < 12 && hourOfDay > 0)
         {
             hourOfDay = hourOfDay;
             hourString = String.valueOf(hourOfDay);
             am_pm = "AM";
 
+            Log.e("num","1");
+
+        }
+        else if(hourOfDay == 0)
+        {
+
+            am_pm = "AM";
+            hourString = "12";
+
+
+        }
+        else if (hourOfDay == 12)
+        {
+
+            am_pm = "PM";
+            hourString = String.valueOf(hourOfDay);
+
+
         }
         else
         {
+
             am_pm = "PM";
             hourOfDay = hourOfDay - 12;
             hourString = String.valueOf(hourOfDay);
@@ -413,11 +530,11 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
 
         String time = hourString+":"+minuteString + " " + am_pm;
 
+        timeDate = false;
 
         if(!switchTimeDialog)
         {
             //gets startdate
-
 
 
             startTimeTV.setText(time);
