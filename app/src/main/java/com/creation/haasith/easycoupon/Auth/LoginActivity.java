@@ -245,7 +245,7 @@ public class LoginActivity extends AppCompatActivity
             AlertDialog.Builder emptyFieldDialog = new AlertDialog.Builder(this);
             emptyFieldDialog.setTitle("Sign Up Error");
             emptyFieldDialog.setCancelable(true);
-            emptyFieldDialog.setIcon(android.R.drawable.ic_dialog_alert);
+            emptyFieldDialog.setIcon(R.mipmap.ic_warning_black_24dp);
 
             emptyFieldDialog.setMessage("Email and/or Password fields can't be empty");
             emptyFieldDialog.setPositiveButton(

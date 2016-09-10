@@ -9,15 +9,23 @@ public class Store
     private String address;
     private String phoneNumber;
     private String email;
+    private String image;
 
 
 
+
+    public Store(String name, String address, String phoneNumber, String email, String image)
+    {
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.image = image;
+    }
 
     public Store()
     {
     }
-
-
 
     public Store(String name, String address, String phoneNumber, String email)
     {
@@ -40,7 +48,10 @@ public class Store
 //        return result;
 //    }
 
-
+    public String getImage()
+    {
+        return image;
+    }
 
     public String getName()
     {

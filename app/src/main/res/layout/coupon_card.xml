@@ -21,7 +21,7 @@
                 android:layout_width="125dp"
                 android:layout_height="match_parent"
                 android:id="@+id/couponImage"
-                android:src="@drawable/store_placeholder"
+                android:src="@drawable/coupon_placeholder"
                 android:scaleType="fitXY"/>
 
             <LinearLayout

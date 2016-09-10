@@ -361,7 +361,6 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
 
                         if (user != null)
                         {
-                            Log.e("num","1");
 
                             final DatabaseReference dbChild = db.child(user.getUid()).child("coupons");
 
@@ -371,8 +370,7 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
                             if(timeDate)
                             {
 
-                                Log.e("num","2");
-
+                             
                                 filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
                                 {
                                     @Override
@@ -381,7 +379,6 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
 
 
 
-                                        Log.e("num","3");
                                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                                         coupon = new Coupon(couponNameET.getText().toString(), couponDescriptonET.getText().toString(), startDayTV.getText().toString(),endDayTV.getText().toString(),downloadUrl.toString());
 
@@ -413,7 +410,6 @@ public class AddCoupon extends AppCompatActivity implements DatePickerDialog.OnD
                                     {
 
 
-                                        Log.e("num","4");
 
                                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                                         coupon = new Coupon(couponNameET.getText().toString(), couponDescriptonET.getText().toString(), startTimeTV.getText().toString(),endTimeTV.getText().toString(), downloadUrl.toString());

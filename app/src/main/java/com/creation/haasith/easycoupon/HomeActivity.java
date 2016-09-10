@@ -16,18 +16,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.creation.haasith.easycoupon.Auth.LoginActivity;
+import com.creation.haasith.easycoupon.Models.Store;
 import com.creation.haasith.easycoupon.Views.HomeFragment;
 import com.creation.haasith.easycoupon.Views.ProfileFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class HomeActivity extends AppCompatActivity
 {
@@ -42,6 +45,10 @@ public class HomeActivity extends AppCompatActivity
     private ActionBarDrawerToggle drawerToggle;
 
     private DatabaseReference db;
+
+    private FirebaseUser user;
+
+
 
 
 
@@ -61,7 +68,7 @@ public class HomeActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle("Home");
+        //getSupportActionBar().setTitle("Home");
 
         // Find our drawer view
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -84,6 +91,8 @@ public class HomeActivity extends AppCompatActivity
         // We can now look up items within the header if needed
         final TextView header = (TextView) headerLayout.findViewById(R.id.header);
 
+        final ImageView headerImage = (ImageView) headerLayout.findViewById(R.id.headerImage);
+
         mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = new FirebaseAuth.AuthStateListener()
@@ -97,27 +106,27 @@ public class HomeActivity extends AppCompatActivity
                 }
                 else
                 {
-                    header.setText(firebaseAuth.getCurrentUser().getEmail());
 
                 }
             }
         };
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
 
-        db = FirebaseDatabase.getInstance().getReference().child("Users").child("one");
+        db = FirebaseDatabase.getInstance().getReference().child("Stores").child(user.getUid());
 
         db.addValueEventListener(new ValueEventListener()
         {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot)
             {
-                String a = dataSnapshot.getValue(String.class);
-
-                Toast.makeText(getApplicationContext(), a,Toast.LENGTH_LONG).show();
+                Store store = dataSnapshot.getValue(Store.class);
 
 
+                Picasso.with(getApplicationContext()).load(store.getImage()).into(headerImage);
 
+                header.setText(store.getName());
             }
 
             @Override
@@ -126,13 +135,6 @@ public class HomeActivity extends AppCompatActivity
 
             }
         });
-
-
-
-
-
-
-
 
 
     }
