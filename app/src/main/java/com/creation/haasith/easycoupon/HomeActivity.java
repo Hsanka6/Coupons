@@ -13,7 +13,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -61,6 +60,8 @@ public class HomeActivity extends AppCompatActivity
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setTitle("Home");
 
         // Find our drawer view
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -189,12 +190,15 @@ public class HomeActivity extends AppCompatActivity
         switch(menuItem.getItemId()) {
             case R.id.nav_first_fragment:
                 fragmentClass = HomeFragment.class;
+                setTitle("Home");
                 break;
             case R.id.nav_second_fragment:
                 fragmentClass = ProfileFragment.class;
+                setTitle("Profile");
                 break;
             case R.id.nav_third_fragment:
                 fragmentClass = ThirdFragment.class;
+                setTitle("Settings");
                 break;
             default:
                 fragmentClass = HomeFragment.class;
@@ -218,7 +222,7 @@ public class HomeActivity extends AppCompatActivity
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
         // Set action bar title
-        setTitle(menuItem.getTitle());
+        //setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mDrawer.closeDrawers();
     }
@@ -246,14 +250,6 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
-    //Set up menu resource file
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu_main; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_shop_home, menu);
-        return true;
-    }
 
 
 

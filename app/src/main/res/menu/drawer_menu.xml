@@ -5,18 +5,18 @@
         <item
             android:id="@+id/nav_first_fragment"
             android:icon="@drawable/one"
-            android:title="First" />
+            android:title="Home" />
         <item
             android:id="@+id/nav_second_fragment"
             android:icon="@drawable/two"
-            android:title="Second" />
+            android:title="Profile" />
         <item
             android:id="@+id/nav_third_fragment"
             android:icon="@drawable/three"
-            android:title="Third" />
+            android:title="Settings" />
         <item
             android:id="@+id/logOut"
-            android:title="Logout" />
+            android:title="Log out" />
     </group>
 
 </menu>

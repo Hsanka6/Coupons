@@ -1,34 +1,38 @@
 package com.creation.haasith.easycoupon.Views;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.creation.haasith.easycoupon.Models.Store;
+import com.creation.haasith.easycoupon.MyCouponsActivity;
 import com.creation.haasith.easycoupon.R;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by gangasanka on 9/4/16.
  */
 public class ProfileFragment extends Fragment
 {
-    private Button getImage;
-    private StorageReference mStorage;
 
-    private ProgressDialog progressDialog;
+    private TextView storeTitle, storeAddress,storePhone;
+    private Button myCoupons;
+    private DatabaseReference db;
+    private FirebaseUser user;
 
-    private static final int UG = 1;
     public ProfileFragment()
     {
         // Required empty public constructor
@@ -39,28 +43,61 @@ public class ProfileFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View v =  inflater.inflate(R.layout.fragment_two, container, false);
-        // Inflate the layout for this fragment
+        View v =  inflater.inflate(R.layout.fragment_profile, container, false);
+        storeTitle = (TextView) v.findViewById(R.id.profileStoreTitle);
+        storeAddress = (TextView) v.findViewById(R.id.profileStoreAddress);
+        storePhone = (TextView) v.findViewById(R.id.profileStorePhoneNumber);
+        myCoupons = (Button) v.findViewById(R.id.myCoupons);
 
-        mStorage = FirebaseStorage.getInstance().getReference();
-
-        progressDialog = new ProgressDialog(getActivity());
-
-        getImage = (Button) v.findViewById(R.id.getImage);
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
 
-        getImage.setOnClickListener(new View.OnClickListener()
+        setHasOptionsMenu(true);
+
+
+
+
+        db = FirebaseDatabase.getInstance().getReference().child("Stores").child(user.getUid());
+
+
+        db.addValueEventListener(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot)
+            {
+                Store currentStore = dataSnapshot.getValue(Store.class);
+
+
+                storeTitle.setText(currentStore.getName());
+
+                storeAddress.setText(currentStore.getAddress());
+
+                storePhone.setText(currentStore.getPhoneNumber());
+
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError)
+            {
+
+            }
+        });
+
+
+        myCoupons.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                Intent i = new Intent(Intent.ACTION_PICK);
-
-                i.setType("image/*");
-
-                startActivityForResult(i,UG);
+                startActivity(new Intent(getActivity(), MyCouponsActivity.class));
             }
         });
+
+
+
+
 
 
 
@@ -72,34 +109,17 @@ public class ProfileFragment extends Fragment
         return v;
     }
 
-
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == UG && resultCode == Activity.RESULT_OK)
-        {
-            Uri uri = data.getData();
-
-            progressDialog.setMessage("Uploading");
-            progressDialog.show();
-
-            StorageReference filePath = mStorage.child("photos").child(uri.getLastPathSegment());
-
-            filePath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
-            {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
-                {
-                    Toast.makeText(getActivity(), "done", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                }
-            });
+        inflater.inflate(R.menu.menu_shop_home, menu);
+        super.onCreateOptionsMenu(menu, inflater);
 
 
 
-        }
     }
+
+
 
 
 
