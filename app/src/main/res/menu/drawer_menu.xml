@@ -8,14 +8,15 @@
             android:title="Home" />
         <item
             android:id="@+id/nav_second_fragment"
-            android:icon="@drawable/two"
+            android:icon="@mipmap/ic_account_circle_black_24dp"
             android:title="Profile" />
         <item
             android:id="@+id/nav_third_fragment"
-            android:icon="@drawable/three"
+            android:icon="@mipmap/ic_settings_black_24dp"
             android:title="Settings" />
         <item
             android:id="@+id/logOut"
+            android:icon="@mipmap/ic_exit_to_app_black_24dp"
             android:title="Log out" />
     </group>
 

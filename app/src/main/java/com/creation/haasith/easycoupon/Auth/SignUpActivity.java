@@ -1,5 +1,6 @@
 package com.creation.haasith.easycoupon.Auth;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class SignUpActivity extends AppCompatActivity
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabase;
+    private ProgressDialog progressDialog;
 
 
 
@@ -51,6 +53,8 @@ public class SignUpActivity extends AppCompatActivity
 
         signUpButton = (Button) findViewById(R.id.signUpButton);
 
+
+        progressDialog = new ProgressDialog(this);
 
         //getSupportActionBar().setTitle("Sign Up");
 
@@ -117,12 +121,19 @@ public class SignUpActivity extends AppCompatActivity
         if(emailET.getText().toString().length() == 0 || passwordET.getText().toString().length() == 0 || phoneNumberET.getText().toString().length() == 0 || addressET.getText().toString().length() == 0 || nameET.getText().toString().length() == 0)
         {
 
+            String alertMessage = "One or more of the fields are empty.";
             AlertDialog.Builder emptyFieldDialog = new AlertDialog.Builder(this);
             emptyFieldDialog.setTitle("Sign Up Error");
-            emptyFieldDialog.setMessage("One or more of the fields are empty.");
             emptyFieldDialog.setCancelable(true);
             emptyFieldDialog.setIcon(android.R.drawable.ic_dialog_alert);
 
+
+            if(passwordET.getText().length() < 6)
+            {
+                alertMessage += "Password is not 6 characters long";
+            }
+
+            emptyFieldDialog.setMessage(alertMessage);
             emptyFieldDialog.setPositiveButton(
                     "Ok",
                     new DialogInterface.OnClickListener() {
@@ -132,11 +143,14 @@ public class SignUpActivity extends AppCompatActivity
                     });
             emptyFieldDialog.show();
 
+
         }
         else
         {
+            progressDialog.setMessage("Signing Up");
+            progressDialog.show();
 
-            mAuth.createUserWithEmailAndPassword(emailET.getText().toString(), passwordET.getText().toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            mAuth.createUserWithEmailAndPassword(emailET.getText().toString().trim(), passwordET.getText().toString().trim()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
@@ -157,13 +171,13 @@ public class SignUpActivity extends AppCompatActivity
                     // the auth state listener will be notified and logic to handle the
                     // signed in user can be handled in the listener.
                     if (!task.isSuccessful()) {
-                        Toast.makeText(getApplicationContext(),"Password needs to be greater than 6 letters",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"Sign Up failed",Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
-                        Toast.makeText(getApplicationContext(),"success", Toast.LENGTH_SHORT).show();
-
+                        progressDialog.dismiss();
                     }
+
 
                     // ...
                 }

@@ -1,9 +1,11 @@
 package com.creation.haasith.easycoupon.Auth;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -237,30 +239,57 @@ public class LoginActivity extends AppCompatActivity
 
     public void signInButton(View view)
     {
-        loginProgress.setMessage("Logging In");
-        loginProgress.show();
 
-        fireBaseAuth.signInWithEmailAndPassword(emailET.getText().toString(),passwordET.getText().toString()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        if(emailET.getText().toString().length() == 0 || passwordET.getText().toString().length() == 0)
+        {
+            AlertDialog.Builder emptyFieldDialog = new AlertDialog.Builder(this);
+            emptyFieldDialog.setTitle("Sign Up Error");
+            emptyFieldDialog.setCancelable(true);
+            emptyFieldDialog.setIcon(android.R.drawable.ic_dialog_alert);
 
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-
-                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        loginProgress.dismiss();
-
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithEmail:failed", task.getException());
-                            Toast.makeText(getApplicationContext(), "Failed to log in", Toast.LENGTH_SHORT).show();
+            emptyFieldDialog.setMessage("Email and/or Password fields can't be empty");
+            emptyFieldDialog.setPositiveButton(
+                    "Ok",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
                         }
+                    });
+            emptyFieldDialog.show();
 
-                        // ...
+
+
+
+        }
+        else
+        {
+            loginProgress.setMessage("Logging In");
+            loginProgress.show();
+            fireBaseAuth.signInWithEmailAndPassword(emailET.getText().toString().trim(), passwordET.getText().toString().trim()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>()
+            {
+
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task)
+                {
+                    Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+
+                    startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                    // If sign in fails, display a message to the user. If sign in succeeds
+                    // the auth state listener will be notified and logic to handle the
+                    // signed in user can be handled in the listener.
+                    loginProgress.dismiss();
+
+                    if (!task.isSuccessful())
+                    {
+                        Log.w(TAG, "signInWithEmail:failed", task.getException());
+                        Toast.makeText(getApplicationContext(), "Failed to log in", Toast.LENGTH_SHORT).show();
                     }
 
-                });
+                    // ...
+                }
+
+            });
+        }
 
 
     }

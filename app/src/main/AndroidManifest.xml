@@ -12,7 +12,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Auth.LoginActivity">
+        <activity android:name=".Auth.LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -26,7 +27,8 @@
         </activity>
         <activity android:name=".Auth.SignUpActivity">
         </activity>
-        <activity android:name=".AddCoupon">
+        <activity android:name=".AddCoupon"
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".MyCouponsActivity">
         </activity>
