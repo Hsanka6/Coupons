@@ -52,6 +52,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
                 android:layout_centerHorizontal="true"
                 android:padding="10dp"
                 android:background="@drawable/input_outline"
@@ -63,7 +64,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/startTime"
-                android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_centerHorizontal="true"
@@ -161,6 +161,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
                 android:layout_below="@+id/startDay">
 
                 <Button
@@ -181,15 +182,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     />
-
             </RelativeLayout>
-
-
-
-
-
-
-
         </RelativeLayout>
 
 
