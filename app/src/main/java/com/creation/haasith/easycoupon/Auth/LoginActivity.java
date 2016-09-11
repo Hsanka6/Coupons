@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.creation.haasith.easycoupon.HomeActivity;
 import com.creation.haasith.easycoupon.R;
+import com.creation.haasith.easycoupon.UserHomeActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -194,7 +195,6 @@ public class LoginActivity extends AppCompatActivity
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
-                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
 
 
 
@@ -208,6 +208,7 @@ public class LoginActivity extends AppCompatActivity
                         }
                         else
                         {
+                            startActivity(new Intent(getApplicationContext(), UserHomeActivity.class));
                             loginProgress.dismiss();
                         }
                         // ...

@@ -19,79 +19,66 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.creation.haasith.easycoupon.Auth.LoginActivity;
-import com.creation.haasith.easycoupon.Models.Store;
-import com.creation.haasith.easycoupon.Views.HomeFragment;
-import com.creation.haasith.easycoupon.Views.ProfileFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-public class HomeActivity extends AppCompatActivity
+public class UserHomeActivity extends AppCompatActivity
 {
-
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseAuth mAuth;
-
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
-
-    private DatabaseReference db;
-
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseAuth mAuth;
     private FirebaseUser user;
-
-
-
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        //LogOut = (Button) findViewById(R.id.logOut);
-        setContentView(R.layout.activity_home);
-
-        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-        tx.replace(R.id.flContent, new HomeFragment());
-        tx.commit();
-
+        setContentView(R.layout.activity_user_home);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //getSupportActionBar().setTitle("Home");
+        FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        tx.replace(R.id.userContent, new FindCouponsFragment());
+        tx.commit();
+
 
         // Find our drawer view
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = (DrawerLayout) findViewById(R.id.user_drawer_layout);
 
         // Find our drawer view
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
+        nvDrawer = (NavigationView) findViewById(R.id.user_nv_view);
         // Setup drawer view
         setupDrawerContent(nvDrawer);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
+
+
 
         drawerToggle = setupDrawerToggle();
 
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawer.addDrawerListener(drawerToggle);
 
+        View headerLayout = nvDrawer.inflateHeaderView(R.layout.user_navigation_bar_layout);
+
+        final TextView header = (TextView) headerLayout.findViewById(R.id.userName);
+
+        ImageView headerImage = (ImageView) headerLayout.findViewById(R.id.userHeaderImage);
+
+        header.setText(user.getDisplayName());
 
 
-        //View headerLayout = nvDrawer.inflateHeaderView(R.layout.navigation_bar_layout);
+        Picasso.with(getApplicationContext()).load(user.getPhotoUrl()).into(headerImage);
 
-        View headerLayout = nvDrawer.inflateHeaderView(R.layout.navigation_bar_layout);
-        // We can now look up items within the header if needed
-        final TextView header = (TextView) headerLayout.findViewById(R.id.header);
-
-        final ImageView headerImage = (ImageView) headerLayout.findViewById(R.id.headerImage);
-
-        mAuth = FirebaseAuth.getInstance();
 
 
         mAuthListener = new FirebaseAuth.AuthStateListener()
@@ -110,33 +97,9 @@ public class HomeActivity extends AppCompatActivity
             }
         };
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
-
-        db = FirebaseDatabase.getInstance().getReference().child("Stores").child(user.getUid());
-
-        db.addValueEventListener(new ValueEventListener()
-        {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot)
-            {
-                Store store = dataSnapshot.getValue(Store.class);
-
-
-                Picasso.with(getApplicationContext()).load(store.getImage()).into(headerImage);
-
-                header.setText(store.getName());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError)
-            {
-
-            }
-        });
-
-
     }
+
+
     private ActionBarDrawerToggle setupDrawerToggle() {
         return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
@@ -157,6 +120,7 @@ public class HomeActivity extends AppCompatActivity
 
 
     }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState)
@@ -180,25 +144,27 @@ public class HomeActivity extends AppCompatActivity
                 });
     }
 
+
+
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
         Class fragmentClass;
         switch(menuItem.getItemId()) {
-            case R.id.nav_first_fragment:
-                fragmentClass = HomeFragment.class;
-                setTitle("Home");
+            case R.id.allCoupons:
+                fragmentClass = FindCouponsFragment.class;
+                setTitle("Find Coupons");
                 break;
-            case R.id.nav_second_fragment:
-                fragmentClass = ProfileFragment.class;
-                setTitle("Profile");
+            case R.id.favorites:
+                fragmentClass = FavoritesFragment.class;
+                setTitle("Favorites");
                 break;
-            case R.id.nav_third_fragment:
+            case R.id.settings:
                 fragmentClass = ThirdFragment.class;
                 setTitle("Settings");
                 break;
             default:
-                fragmentClass = HomeFragment.class;
+                fragmentClass = FindCouponsFragment.class;
         }
 
         if(menuItem.getItemId() == R.id.logOut)
@@ -214,7 +180,7 @@ public class HomeActivity extends AppCompatActivity
 
         // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.userContent, fragment).commit();
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
@@ -223,6 +189,7 @@ public class HomeActivity extends AppCompatActivity
         // Close the navigation drawer
         mDrawer.closeDrawers();
     }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -248,31 +215,4 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

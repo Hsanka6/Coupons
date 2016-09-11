@@ -16,16 +16,15 @@
         android:src="@drawable/coupon_placeholder"
         app:civ_border_color="#EEEEEE"
         app:civ_border_width="1dp"
-        android:id="@+id/headerImage"
+        android:id="@+id/userHeaderImage"
         app:civ_shadow="true"
         app:civ_shadow_radius="1"
         app:civ_shadow_color="#EEEEEE"/>
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Header"
-        android:id="@+id/header"
+        android:id="@+id/userName"
         android:textColor="@android:color/white"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
